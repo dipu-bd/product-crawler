@@ -23,9 +23,8 @@ class ProductsSpider(CrawlSpider):
 
     def parse_item(self, response):
         """Parse products from page"""
-        is_item = response.url[-5:] == '.html'
-        if not is_item:
-            logging.info('Ignored: %s', response.url)
+        if response.url[-5:] != '.html':
+            logging.info('Skipped: %s', response.url)
             return
         # end if
         logging.info('Parsing: %s', response.url)
@@ -34,16 +33,21 @@ class ProductsSpider(CrawlSpider):
         item['link'] = response.url
 
         main = response.css('main.osh-container')
-        breadcrumb = main.css('nav.osh-breadcrumb ul li a::text').extract()
-        item['category'] = breadcrumb[1:-1]
-        item['title'] = breadcrumb[-1]
+        category = main.xpath('.//nav//a/@title').extract()
+        item['category'] = category[1:-1]
+        item['title'] = category[-1]
+
+        item['features'] = main.css('.list.-features ul li::text').extract()
 
         ######################### Main Information #########################
+
         detail = main.css('section.sku-detail')
-        item['previews'] = detail.css('div.media div#thumbs-slide a::attr(href)').extract()
+        item['previews'] = detail.css('#thumbs-slide').xpath('.//@href').extract()
+
+        brand = detail.css('a.brand')
         item['brand'] = {
-            'name': detail.css('a.brand img::attr(alt)').extract_first(),
-            'logo': detail.css('a.brand img::attr(src)').extract_first(),
+            'name': brand.xpath('./img/@alt').extract_first(),
+            'logo': brand.xpath('./img/@src').extract_first()
         }
 
         item['title'] = detail.css('h1.title::text').extract_first() or item['title']
@@ -51,25 +55,26 @@ class ProductsSpider(CrawlSpider):
 
         price_box = detail.css('div.price-box')
         price = price_box.css('span.price:not(.-old)')
-        old_price = price_box.css('span.price:not(.-old)')
+        old_price = price_box.css('span.price.-old')
         item['price'] = {
-            'value': price.css('span::attr(data-price)').extract_first(),
-            'currency': price.css('span::attr(data-currency-iso)').extract_first(),
-        }
-        item['old_price'] = {
-            'value': old_price.css('span::attr(data-price)').extract_first(),
-            'currency': old_price.css('span::attr(data-currency-iso)').extract_first(),
+            'value': price.xpath('.//span/@data-price').extract_first(),
+            'currency': price.xpath('.//span/@data-currency-iso').extract_first(),
         }
 
-        item['discount_rate'] = price_box.css('span.sale-flag-percent::text').extract_first()
+        if len(old_price) > 0:
+            item['old_price'] = {
+                'value': old_price.xpath('.//span/@data-price').extract_first(),
+                'currency': old_price.xpath('.//span/@data-currency-iso').extract_first(),
+            }
+            item['discount_rate'] = price_box.css('.sale-flag-percent::text').extract_first()
+        # end if
 
-        item['warranty'] = detail.css('div.-warranty span.-description::text').extract_first()
+        item['warranty'] = detail.css('.-warranty .-description::text').extract_first("Not Specified")
 
         ######################### Extra Descriptions #########################
-        tabs = main.css('div.osh-tabs')
-        item['description'] = tabs.css('div.product-description').extract_first()
 
-        item['features'] = main.css('.list.-features ul li::text').extract()
+        tabs = main.css('div.osh-tabs')
+        item['description'] = tabs.css('.product-description').extract_first()
 
         item['specs'] = dict()
         for spec in tabs.css('div.osh-table div.osh-row'):
@@ -80,8 +85,7 @@ class ProductsSpider(CrawlSpider):
             # end if
         # end for
 
-        rating = tabs.css('div#ratingReviews .summary')
-        item['rating'] = rating.css('.avg .container span::text').extract_first()
+        item['rating'] = tabs.css('#ratingReviews .avg span::text').extract_first()
 
         yield item
     # end def
