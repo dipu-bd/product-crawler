@@ -37,7 +37,7 @@ class MongoPipeline(object):
         """
         # Connect with mongodb server
         self.client = MongoClient(self.mongo_uri)
-        self.dbc = self.client[self.mongo_db][spider.name]
+        self.dbc = self.client[self.mongo_db][spider.collection_name]
     # end def
 
     def close_spider(self, spider):

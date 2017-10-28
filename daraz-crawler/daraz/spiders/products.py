@@ -19,6 +19,7 @@ class ProductsSpider(CrawlSpider):
     )
 
     primary_key = 'link'
+    collection_name = 'daraz'
 
     def parse_item(self, response):
         """Parse products from page"""
@@ -80,7 +81,6 @@ class ProductsSpider(CrawlSpider):
         rating = tabs.css('div#ratingReviews .summary')
         item['rating'] = rating.css('.avg .container span::text').extract_first()
 
-        logging.info(item)
         yield item
     # end def
 # end def

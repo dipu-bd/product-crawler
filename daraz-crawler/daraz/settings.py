@@ -14,6 +14,11 @@ BOT_NAME = 'daraz'
 SPIDER_MODULES = ['daraz.spiders']
 NEWSPIDER_MODULE = 'daraz.spiders'
 
+LOG_LEVEL = 'INFO'
+
+# MongoDB setup
+MONGO_URI = 'mongodb://localhost:27017'
+MONGO_DATABASE = 'productdb'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'daraz (+http://www.yourdomain.com)'
