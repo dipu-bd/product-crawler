@@ -75,7 +75,8 @@ SPIDER_MIDDLEWARES = {
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'daraz.pipelines.MongoPipeline': 100,
+    'daraz.pipelines.format_pipeline.FormatPipeline': 100,
+    'daraz.pipelines.mongo_pipeline.MongoPipeline': 200,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

@@ -63,7 +63,7 @@ class ProductsSpider(CrawlSpider):
             'currency': old_price.css('span::attr(data-currency-iso)').extract_first(),
         }
 
-        item['discount_rate'] = price_box.css('span.sale-flag-percent').extract_first()
+        item['discount_rate'] = price_box.css('span.sale-flag-percent::text').extract_first()
 
         item['warranty'] = detail.css('div.-warranty span.-description::text').extract_first()
 
@@ -85,7 +85,6 @@ class ProductsSpider(CrawlSpider):
     # end def
 # end def
 
-
 """
 Traits
 --------------
@@ -97,5 +96,4 @@ Traits
 - `div.detail-features ul li::text` has feature list. Removing non-ascii code is recommended.
 - `span.price:not(.-old)` selects current price
 - `span.price.-old` selects old price
-
 """
