@@ -34,7 +34,7 @@ class ProductsSpider(CrawlSpider):
         item['category'] = breadcrumb[1:-1]
         #item['title'] = breadcrumb[-1]
 
-        #################################### Main Information ####################################
+        ######################### Main Information #########################
 
         detail = main.css('section.sku-detail')
         item['previews'] = detail.css('div.media div#thumbs-slide a::attr(href)').extract()
@@ -60,14 +60,24 @@ class ProductsSpider(CrawlSpider):
             'currency': old_price.css('span::attr(data-currency-iso)').extract_first(),
         }
 
-        item['discount_percent'] = price_box.css('span.sale-flag-percent').extract_first()
+        item['discount_rate'] = price_box.css('span.sale-flag-percent').extract_first()
 
         item['warranty'] = detail.css('div.-warranty span.-description::text').extract_first()
 
-        #################################### Extrac Descriptions ####################################
+        ######################### Extra Descriptions #########################
 
-        
+        tabs = main.css('div.osh-tabs')
+        item['description'] = tabs.css('div.product-description').extract_first()
 
+        item['specifications'] = []
+        for spec in tabs.css('div#product-details div.osh-row'):
+            key = spec.css('.osh-col.-head::text').extract_first()
+            val = spec.css('.osh-col:not(.-head)::text').extract_first()
+            item['specifications'].append({key: val})
+        # end for
+
+        rating = tabs.css('div#ratingReviews .summary')
+        item['rating'] = rating.css('.avg .container span::text').extract_first()
 
         yield item
     # end def
