@@ -18,7 +18,7 @@ class FormatPipeline(object):
         item["category"] = [x.strip() for x in item["category"]]
         item["title"] = item["title"].strip()
         item["warranty"] = (item["warranty"] or "Not Specified").strip()
-        item["rating"] = to_float(item["rating"])
+        item["rating"] = to_float(item["rating"].replace(',', '.'))
         item["features"] = [to_ascii(x) for x in item["features"]]
         item["features"] = list(set(item["features"]))
         item["price"]["value"] = to_float(str(item["price"]["value"]))
