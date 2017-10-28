@@ -18,7 +18,7 @@ To run this crawler:
 ## Development Progress
 
 | Name | Link  | Status |
-|-----|----|----:|
+|-----|----|:----:|
 | daraz.com.bd |  http://www.daraz.com.bd | done |
 | AjkerDeal.com | https://ajkerdeal.com | |
 | rokomari.com | https://www.rokomari.com/book | |
