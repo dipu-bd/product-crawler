@@ -18,6 +18,8 @@ class ProductsSpider(CrawlSpider):
         Rule(LinkExtractor(allow=r'/'), callback='parse_item', follow=True),
     )
 
+    primary_key = 'link'
+
     def parse_item(self, response):
         """Parse products from page"""
         is_item = response.url[-5:] == '.html'
@@ -28,14 +30,14 @@ class ProductsSpider(CrawlSpider):
         logging.info('Parsing: %s', response.url)
 
         item = dict()
-        main = response.css('main.osh-container')
+        item['link'] = response.url
 
+        main = response.css('main.osh-container')
         breadcrumb = main.css('nav.osh-breadcrumb ul li a::text').extract()
         item['category'] = breadcrumb[1:-1]
         #item['title'] = breadcrumb[-1]
 
         ######################### Main Information #########################
-
         detail = main.css('section.sku-detail')
         item['previews'] = detail.css('div.media div#thumbs-slide a::attr(href)').extract()
         item['brand'] = {
@@ -65,7 +67,6 @@ class ProductsSpider(CrawlSpider):
         item['warranty'] = detail.css('div.-warranty span.-description::text').extract_first()
 
         ######################### Extra Descriptions #########################
-
         tabs = main.css('div.osh-tabs')
         item['description'] = tabs.css('div.product-description').extract_first()
 
@@ -79,6 +80,7 @@ class ProductsSpider(CrawlSpider):
         rating = tabs.css('div#ratingReviews .summary')
         item['rating'] = rating.css('.avg .container span::text').extract_first()
 
+        logging.info(item)
         yield item
     # end def
 # end def
