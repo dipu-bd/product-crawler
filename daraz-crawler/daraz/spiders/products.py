@@ -48,7 +48,6 @@ class ProductsSpider(CrawlSpider):
 
         item['title'] = detail.css('h1.title::text').extract_first() or item['title']
 
-        item['features'] = detail.css('div.detail-features ul li::text').extract()
 
         price_box = detail.css('div.price-box')
         price = price_box.css('span.price:not(.-old)')
@@ -70,11 +69,15 @@ class ProductsSpider(CrawlSpider):
         tabs = main.css('div.osh-tabs')
         item['description'] = tabs.css('div.product-description').extract_first()
 
-        item['specifications'] = []
-        for spec in tabs.css('div#product-details div.osh-row'):
+        item['features'] = main.css('.list.-features ul li::text').extract()
+
+        item['specs'] = dict()
+        for spec in tabs.css('div.osh-table div.osh-row'):
             key = spec.css('.osh-col.-head::text').extract_first()
             val = spec.css('.osh-col:not(.-head)::text').extract_first()
-            item['specifications'].append({key: val})
+            if key and val:
+                item['specs'].update({key: val})
+            # end if
         # end for
 
         rating = tabs.css('div#ratingReviews .summary')
@@ -95,4 +98,6 @@ Traits
 - `div.detail-features ul li::text` has feature list. Removing non-ascii code is recommended.
 - `span.price:not(.-old)` selects current price
 - `span.price.-old` selects old price
+- sometime description contains specification
+- key features are seen in 3 places: main details section, description tab, specifications tab.
 """

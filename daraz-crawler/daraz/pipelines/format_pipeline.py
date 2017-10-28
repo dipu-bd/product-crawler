@@ -17,19 +17,19 @@ class FormatPipeline(object):
         item["link"] = item["link"].strip()
         item["category"] = [x.strip() for x in item["category"]]
         item["title"] = item["title"].strip()
-        item["features"] = [to_ascii(x).strip() for x in item["features"]]
         item["price"]["value"] = to_float(str(item["price"]["value"]))
         item["old_price"]["value"] = to_float(str(item["old_price"]["value"]))
         item["discount_rate"] = to_int((item["discount_rate"] or "0%").strip()[:-1])
         item["warranty"] = (item["warranty"] or "Not Specified").strip()
         item["rating"] = to_float(item["rating"])
-
+        item["features"] = [to_ascii(x) for x in item["features"]]
+        item["features"] = list(set(item["features"]))
         return item
     # end def
 # end class
 
 def to_ascii(x):
-    return x.encode('ascii', 'ignore').decode('utf8')
+    return x.encode('ascii', 'ignore').decode('utf8').strip()
 #end def
 
 def parse(func, arg):
