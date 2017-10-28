@@ -39,13 +39,13 @@ def parse(func, arg):
     try:
         return func(arg)
     except ValueError:
-        return arg.strip()
+        return 0
 # end def
 
 def to_float(x):
-    return parse(float, "0" + (x or ""))
+    return parse(float, (x or "0"))
 # end def
 
 def to_int(x):
-    return parse(int, "0" + (x or ""))
+    return parse(int, (x or "0"))
 # end def
