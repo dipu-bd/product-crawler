@@ -36,7 +36,7 @@ class ProductsSpider(CrawlSpider):
         main = response.css('main.osh-container')
         breadcrumb = main.css('nav.osh-breadcrumb ul li a::text').extract()
         item['category'] = breadcrumb[1:-1]
-        #item['title'] = breadcrumb[-1]
+        item['title'] = breadcrumb[-1]
 
         ######################### Main Information #########################
         detail = main.css('section.sku-detail')
@@ -46,10 +46,9 @@ class ProductsSpider(CrawlSpider):
             'logo': detail.css('a.brand img::attr(src)').extract_first(),
         }
 
-        item['title'] = detail.css('h1.title::text').extract_first()
+        item['title'] = detail.css('h1.title::text').extract_first() or item['title']
 
-        features = detail.css('div.detail-features ul li::text').extract()
-        item['features'] = [x.encode('ascii', 'ignore').decode('utf8') for x in features]
+        item['features'] = detail.css('div.detail-features ul li::text').extract()
 
         price_box = detail.css('div.price-box')
         price = price_box.css('span.price:not(.-old)')

@@ -14,7 +14,7 @@ class FormatPipeline(object):
         """
         Process an item produced by the spider
         """
-        item["link"] = item["link"].strip(),
+        item["link"] = item["link"].strip()
         item["category"] = [x.strip() for x in item["category"]]
         item["title"] = item["title"].strip()
         item["features"] = [to_ascii(x).strip() for x in item["features"]]
