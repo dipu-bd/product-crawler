@@ -15,7 +15,8 @@ class ProductsSpider(CrawlSpider):
     start_urls = ['http://www.daraz.com.bd/']
 
     rules = (
-        Rule(LinkExtractor(allow=r'/'), callback='parse_item', follow=True),
+        Rule(LinkExtractor(allow=r'/', deny=r'/bn/'),
+        callback='parse_item', follow=True),
     )
 
     primary_key = 'link'
