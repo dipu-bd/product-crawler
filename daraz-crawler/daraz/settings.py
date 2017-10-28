@@ -32,10 +32,10 @@ CONCURRENT_REQUESTS = 256
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY = 0.003
+DOWNLOAD_DELAY = 0.005
 # The download delay setting will honor only one of:
-CONCURRENT_REQUESTS_PER_DOMAIN = 128
-CONCURRENT_REQUESTS_PER_IP = 64
+CONCURRENT_REQUESTS_PER_DOMAIN = 64
+CONCURRENT_REQUESTS_PER_IP = 32
 
 # Disable cookies (enabled by default)
 COOKIES_ENABLED = False
