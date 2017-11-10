@@ -1,9 +1,5 @@
 # Dungulie Product Crawler
 
-Clone this repository:
-
-`git clone ssh://git@phabricator.codemaster.io:2222/diffusion/28/dung-prod.git`
-
 ## daraz-crawler
 To run this crawler:
 
